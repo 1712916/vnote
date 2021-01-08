@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:lets_note/client-side/provider/login-provider.dart';
+import 'package:lets_note/client-side/widgets/activity-page/login-page.dart';
 import 'package:lets_note/server-side/main.dart';
+import 'package:provider/provider.dart';
 import 'client-side/widgets/main-page/main-navigate.dart';
 
 void main() {
   runServer();
 
-  runApp(VNote());
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context)=>LoginProvider())
+      ],
+      child: VNote()));
 }
 
  class VNote extends StatelessWidget {
@@ -28,7 +35,8 @@ void main() {
 
        ) ,
        themeMode: ThemeMode.dark,
-       home: MainNavigator(),
+       home: Provider.of<LoginProvider>(context).isLogin?MainNavigator():LoginPage(),
+       debugShowCheckedModeBanner: false,
        );
    }
  }
