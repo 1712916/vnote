@@ -1,5 +1,6 @@
 
 import 'package:lets_note/server-side/constants.dart';
+import 'package:lets_note/server-side/services/data.dart';
 import 'package:lets_note/server-side/services/login.dart';
 
 void runServer(){
@@ -17,6 +18,7 @@ class ServerManager{
       case ConstantRequestName.login:
         return  LoginServices.login(userAccount: data["userAccount"].toString(),password:data["userPassword"].toString() );
       case  ConstantRequestName.loadTodayData:
+        return DataServices.getTodayData(userId:data["userId"] );
 
     }
   }

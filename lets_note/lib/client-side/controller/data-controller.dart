@@ -4,7 +4,7 @@ class DataController{
   static getDataForSimpleNote({String dataId}){
 
   }
-  static getTodayData({String userId}){
-      DataServices.getDataToday(userId: userId);
+  static getTodayData({int userId}){
+    return  DataServices.getDataToday(userId: userId);
   }
 }

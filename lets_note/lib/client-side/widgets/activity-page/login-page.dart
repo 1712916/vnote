@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:lets_note/client-side/controller/login.dart';
 import 'package:lets_note/client-side/provider/login-provider.dart';
@@ -19,8 +21,8 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     accountController=TextEditingController();
     passwordController=TextEditingController();
-
-
+    accountController.text="boss";
+    passwordController.text="1";
   }
 
   @override
@@ -65,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                 });
                  var response= LoginController.login(userPassword:  passwordController.text,userAccount: accountController.text);
 
-                if(response['status']==200){
+                if(response ['status']==200){
                   Provider.of<LoginProvider>(context,listen: false).changeStatus();
                   Provider.of<LoginProvider>(context,listen: false).updateData(userId: response['payload']['userId'],userAccount:response['payload']['userAccount'],userName: response['payload']['userName']);
                   print("data ${     Provider.of<LoginProvider>(context,listen: false).userId}");

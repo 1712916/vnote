@@ -11,7 +11,7 @@ class CheckItem {
 
 class CheckListPage extends StatefulWidget {
   static const String routeName = '/checklist-page';
-  String dataId;
+  int dataId;
   CheckListPage({this.dataId});
   @override
   _CheckListPageState createState() => _CheckListPageState();

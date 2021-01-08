@@ -4,7 +4,7 @@ class SimpleNotePage extends StatefulWidget {
   static const String routeName = '/simple-page';
   String title;
   String content;
-  String dataId;
+  int dataId;
   SimpleNotePage({this.dataId,this.content,this.title});
   @override
   _SimpleNotePageState createState() => _SimpleNotePageState();

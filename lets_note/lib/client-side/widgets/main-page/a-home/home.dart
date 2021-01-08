@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lets_note/client-side/models/note-datum.dart';
-import 'package:lets_note/client-side/widgets/custom-widgets/button.dart';
+import 'package:lets_note/client-side/controller/data-controller.dart';
+import 'package:lets_note/client-side/models/today-response-model.dart';
+import 'package:lets_note/client-side/provider/login-provider.dart';
+ import 'package:lets_note/client-side/widgets/custom-widgets/button.dart';
 import 'package:lets_note/client-side/widgets/custom-widgets/strings.dart';
 import 'package:lets_note/client-side/widgets/custom-widgets/text-type.dart';
 import 'package:lets_note/client-side/widgets/main-page/a-home/check-list.dart';
+import 'package:provider/provider.dart';
 
 import 'simple-note.dart';
 
@@ -38,23 +41,16 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<NoteItem> data = [
-    Spending(content: [
-      SpendingDatum(
-
-          content: "Ăn sáng",
-          category: "",
-          money: 1500,
-          spendingType: SpendingType.spending)
-    ],id: "123"),
-    SimpleNote(
-      id: "456",
-        content: "sáng nay đi bệnh viện mà ko làm gì cả", title: "Sáng thứ 6"),
-  ];
+  List<Payload> data = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    var response=DataController.getTodayData(userId: Provider.of<LoginProvider>(context,listen: false).userId);
+    print("$response");
+    data= List<Payload>.from(response["payload"].map((x) => Payload.fromJson(x)));
+  print("data $data");
   }
 
   @override
@@ -120,10 +116,10 @@ class _HomeState extends State<Home> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => PageFactory.getType(
-                                        type: e.getType().index,dataId: e.id)));
+                                        type: e.typeNote,dataId: e.id)));
                           },
-                          leading: Icon(iconDictionary[e.getType().index]),
-                          title: Text(e.getTitle()),
+                            leading: Icon(iconDictionary[e.typeNote]),
+                          title: Text(e.title),
                         ))
                     .toList(),
               ),
@@ -136,14 +132,14 @@ class _HomeState extends State<Home> {
 }
 
 Map iconDictionary = {
-  NoteType.simpleNote.index: Icons.rate_review,
-  NoteType.spending.index: Icons.attach_money_rounded,
-  NoteType.reminder.index: Icons.add_alarm_rounded,
-  NoteType.checkList.index: Icons.check_circle_outline_rounded,
+ 0: Icons.rate_review,
+  1: Icons.attach_money_rounded,
+  2: Icons.add_alarm_rounded,
+  3: Icons.check_circle_outline_rounded,
 };
 
 class PageFactory {
-  static Widget getType({int type, String dataId}) {
+  static Widget getType({int type, int dataId}) {
     switch (type) {
       case 0:
         {
@@ -176,3 +172,4 @@ class PageFactory {
     }
   }
 }
+
