@@ -19,7 +19,10 @@ class ServerManager{
         return  LoginServices.login(userAccount: data["userAccount"].toString(),password:data["userPassword"].toString() );
       case  ConstantRequestName.loadTodayData:
         return DataServices.getTodayData(userId:data["userId"] );
-
+      case ConstantRequestName.loadDataById:
+        return DataServices.getDataById(id: data["dataId"]);
+      case ConstantRequestName.updateDataById:
+        return DataServices.updateDataById(id: data["dataId"],datum: data["datum"]);
     }
   }
 }

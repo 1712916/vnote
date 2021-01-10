@@ -19,7 +19,12 @@ void main() {
    @override
    Widget build(BuildContext context) {
      return MaterialApp(
-       theme: ThemeData.dark(),
+
+       theme: ThemeData(
+         floatingActionButtonTheme: FloatingActionButtonThemeData(
+           foregroundColor: Colors.red,
+         ),
+       ),
        darkTheme: ThemeData(
          //  primaryColor: Colors.black54,
          // appBarTheme: AppBarTheme(
@@ -32,6 +37,10 @@ void main() {
          canvasColor: Colors.white10, //background
          accentIconTheme: IconThemeData(color: Colors.white),
          bottomAppBarColor: Colors.white,
+         floatingActionButtonTheme: FloatingActionButtonThemeData(
+           foregroundColor: Colors.white,
+           backgroundColor: Colors.green
+         ),
 
        ) ,
        themeMode: ThemeMode.dark,

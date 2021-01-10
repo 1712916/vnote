@@ -1,15 +1,15 @@
 import 'dart:convert';
 
 import 'package:lets_note/server-side/models/note-datum.dart';
-SimpleNote simpleNoteFromJson(String str) => SimpleNote.fromJson(json.decode(str));
+SimpleNoteModel simpleNoteFromJson(String str) => SimpleNoteModel.fromJson(json.decode(str));
 
-String simpleNoteToJson(SimpleNote data) => json.encode(data.toJson());
+String simpleNoteToJson(SimpleNoteModel data) => json.encode(data.toJson());
 
-class SimpleNote implements NoteItem {
+class SimpleNoteModel implements NoteItem {
   String title;
   String content;
 
-  SimpleNote({this.title,this.content,this.id,this.dateCreated,this.dateUpdate,this.userId});
+  SimpleNoteModel({this.title,this.content,this.id,this.dateCreated,this.dateUpdate,this.userId});
 
   @override
   String getTitle() {
@@ -32,7 +32,7 @@ class SimpleNote implements NoteItem {
 
   @override
   int userId;
-  factory SimpleNote.fromJson(Map<String, dynamic> json) => SimpleNote(
+  factory SimpleNoteModel.fromJson(Map<String, dynamic> json) => SimpleNoteModel(
     id: json["id"],
     userId: json["userId"],
     title: json["title"],

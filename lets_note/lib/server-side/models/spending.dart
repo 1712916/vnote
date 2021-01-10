@@ -1,21 +1,27 @@
+
+import 'package:lets_note/server-side/mockup-data/data.dart';
 import 'package:lets_note/server-side/models/note-datum.dart';
 
 import 'dart:convert';
 
 import 'dart:convert';
 
-Spending spendingFromJson(String str) => Spending.fromJson(json.decode(str));
+SpendingModel spendingFromJson(String str) => SpendingModel.fromJson(json.decode(str));
 
-String spendingToJson(Spending data) => json.encode(data.toJson());
+String spendingToJson(SpendingModel data) => json.encode(data.toJson());
 
-  class Spending implements NoteItem {
-  int  spendingType; //loại chi tiêu  0 | thu nhập 1
-  String content; //
-  double money;
-  Spending({this.content,this.id, this.spendingType, this.dateCreated,this.userId,this.dateUpdate,this.money});
+  class SpendingModel implements NoteItem {
+  //loại chi tiêu  -1 | thu nhập 1
+  SpendingType spendingType;
+  String note; //
+  int money;
+  SpendingModel({this.note,this.id, this.spendingType, this.dateCreated,this.userId,this.dateUpdate,this.money});
   @override
   String getTitle() {
-    return '${this.content} (+${this.content.length})';
+    print(this.spendingType);
+    String sign= this.spendingType.type==1 ?"+":"-";
+
+    return '${this.spendingType.title } ( ${sign} ${this.money.toString()} VND )';
   }
 
   @override
@@ -35,11 +41,12 @@ String spendingToJson(Spending data) => json.encode(data.toJson());
   @override
   int userId;
 
-  factory Spending.fromJson(Map<String, dynamic> json) => Spending(
+  factory SpendingModel.fromJson(Map<String, dynamic> json) => SpendingModel(
     id: json["id"],
     userId: json["userId"],
-    spendingType: json["spendingType"],
-    content: json["content"],
+    money: json["money"],
+    spendingType: SpendingType.fromJson(json["spendingType"]),
+    note: json["content"],
     dateCreated: DateTime.parse(json["dateCreated"]),
     dateUpdate: DateTime.parse(json["dateUpdate"]),
   );
@@ -47,8 +54,9 @@ String spendingToJson(Spending data) => json.encode(data.toJson());
   Map<String, dynamic> toJson() => {
     "id": id,
     "userId": userId,
-    "spendingType": spendingType,
-    "content": content,
+    "money":money,
+    "spendingType": spendingType.toJson(),
+    "content": note,
     "dateCreated": dateCreated.toIso8601String(),
     "dateUpdate": dateUpdate.toIso8601String(),
   };

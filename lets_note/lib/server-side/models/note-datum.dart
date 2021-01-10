@@ -67,8 +67,7 @@ class NoteItem {
 
 enum NoteType {
   simpleNote,
-  spending, //chi tiêu
-  reminder, //lời nhắc
+  spending, //chi tiêu//lời nhắc
   checkList,
 }
 

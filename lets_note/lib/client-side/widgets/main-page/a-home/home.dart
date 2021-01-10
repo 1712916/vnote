@@ -6,9 +6,10 @@ import 'package:lets_note/client-side/provider/login-provider.dart';
 import 'package:lets_note/client-side/widgets/custom-widgets/strings.dart';
 import 'package:lets_note/client-side/widgets/custom-widgets/text-type.dart';
 import 'package:lets_note/client-side/widgets/main-page/a-home/check-list.dart';
+import 'package:lets_note/client-side/widgets/main-page/a-home/speding-page.dart';
 import 'package:provider/provider.dart';
 
-import 'simple-note.dart';
+import 'simple-note-page.dart';
 
 class HomeNavigator extends StatelessWidget {
   @override
@@ -25,6 +26,8 @@ return MaterialPageRoute(
           return SimpleNotePage();
         case CheckListPage.routeName:
           return CheckListPage();
+        case SpendingPage.routeName:
+          return SpendingPage();
         default:
           return Home();
       }
@@ -47,14 +50,20 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
 
-    var response=DataController.getTodayData(userId: Provider.of<LoginProvider>(context,listen: false).userId);
-    print("$response");
-    data= List<Payload>.from(response["payload"].map((x) => Payload.fromJson(x)));
-  print("data $data");
+
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _onLoadData();
+  }
+
+
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
@@ -86,6 +95,12 @@ class _HomeState extends State<Home> {
                   FeatureButton(
                     title: "Chi tiêu",
                     iconData: Icons.attach_money_rounded,
+                    doFunction: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SpendingPage()));
+                    },
                   ),
                   FeatureButton(
                     title: "Lời nhắc",
@@ -106,36 +121,47 @@ class _HomeState extends State<Home> {
             ),
           ),
           Divider(),
-          SingleChildScrollView(
-            child: Container(
-              child: Column(
-                children: data
-                    .map((e) => ListTile(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => PageFactory.getType(
-                                        type: e.typeNote,dataId: e.id)));
-                          },
-                            leading: Icon(iconDictionary[e.typeNote]),
-                          title: Text(e.title),
-                        ))
-                    .toList(),
-              ),
-            ),
+          Expanded(
+            child: RefreshIndicator(
+                child:  ListView(
+              children: data
+                  .map((e) => ListTile(
+                onTap: ()   {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PageFactory.getType(
+                              type: e.typeNote,dataId: e.id))).then((value) {
+                      _onLoadData();
+                    });
+
+                },
+                leading: Icon(iconDictionary[e.typeNote]),
+                title: Text(e.title),
+              ))
+                  .toList(),
+            ), onRefresh: () async {
+              _onLoadData();
+              return  ;
+            }),
           ),
+
         ],
       ),
     );
+  }
+  _onLoadData()   {
+    var response=DataController.getTodayData(userId: Provider.of<LoginProvider>(context,listen: false).userId);
+    setState(() {
+      data= List<Payload>.from(response["payload"].map((x) => Payload.fromJson(x)));
+    });
   }
 }
 
 Map iconDictionary = {
  0: Icons.rate_review,
   1: Icons.attach_money_rounded,
-  2: Icons.add_alarm_rounded,
-  3: Icons.check_circle_outline_rounded,
+  2: Icons.check_circle_outline_rounded,
 };
 
 class PageFactory {
@@ -150,19 +176,12 @@ class PageFactory {
         break;
       case 1:
         {
-          return SimpleNotePage(
+          return SpendingPage(
             dataId: dataId,
           );
         }
         break;
-      case 3:
-        {
-          return SimpleNotePage(
-            dataId: dataId,
-          );
-        }
-        break;
-      case 4:
+      case 2:
         {
           return CheckListPage(
             dataId: dataId,
