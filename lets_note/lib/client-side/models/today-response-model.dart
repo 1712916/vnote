@@ -35,22 +35,30 @@ class Payload {
     this.id,
     this.title,
     this.typeNote,
+    this.dateCreated,
+    this.dateUpdate
   });
 
   int id;
   String title;
   int typeNote;
+  DateTime dateCreated;
+  DateTime dateUpdate;
 
   factory Payload.fromJson(Map<String, dynamic> json) => Payload(
     id: json["id"],
     title: json["title"],
     typeNote: json["typeNote"],
+    dateUpdate:  DateTime.parse(json["dateUpdate"]),
+    dateCreated:  DateTime.parse(json["dateCreated"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "title": title,
     "typeNote": typeNote,
+    "dateCreated":dateCreated.toIso8601String(),
+    "dateUpdate":dateUpdate.toIso8601String(),
   };
 }
 

@@ -32,6 +32,7 @@ class SimpleNoteModel implements NoteItem {
 
   @override
   int userId;
+
   factory SimpleNoteModel.fromJson(Map<String, dynamic> json) => SimpleNoteModel(
     id: json["id"],
     userId: json["userId"],

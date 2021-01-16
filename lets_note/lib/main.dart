@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:lets_note/client-side/provider/login-provider.dart';
 import 'package:lets_note/client-side/widgets/activity-page/login-page.dart';
-import 'package:lets_note/server-side/main.dart';
+import 'package:lets_note/server-side/server-main.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'client-side/widgets/main-page/main-navigate.dart';
 
 void main() {
   runServer();
+  WidgetsFlutterBinding.ensureInitialized();
+  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+  prefs.then((value){
+    int userId=value.getInt("userId");
+    runApp(MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context)=>LoginProvider(userId: userId??null,isLogin: userId!=null?true:false))
+        ],
+        child: VNote()));
+  });
 
-  runApp(MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context)=>LoginProvider())
-      ],
-      child: VNote()));
 }
 
  class VNote extends StatelessWidget {

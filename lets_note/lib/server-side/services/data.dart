@@ -19,4 +19,10 @@ class DataServices{
     //nếu không thì trả về
     return NoteData.updateById(id:id,datum: datum);
   }
+  static searchData({int userId,dynamic filter}){
+    //check today có data chưa
+    //nếu có thì trả về có
+    //nếu không thì trả về
+    return NoteData.searchMethod(userId:userId,filter: filter);
+  }
 }

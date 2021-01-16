@@ -39,3 +39,22 @@ class _FeatureButtonState extends State<FeatureButton> {
     );
   }
 }
+
+Widget simpleButton({String label, Function doFuction}){
+  return Container(
+    width: double.infinity,
+    decoration: BoxDecoration(
+        color: Colors.deepPurple[700],
+        borderRadius:
+        BorderRadius.all(Radius.circular(4.0))),
+    child: FlatButton(
+        onPressed: () async {
+          doFuction();
+        },
+        child: Center(
+          child: Text(
+            label.toUpperCase(),
+          ),
+        )),
+  );
+}

@@ -5,6 +5,7 @@ class LoginProvider with ChangeNotifier{
   int userId;
   String userAccount;
   String userName;
+  LoginProvider({this.userId,this.isLogin,this.userName,this.userAccount});
 
   bool changeStatus(){
     this.isLogin=!this.isLogin;

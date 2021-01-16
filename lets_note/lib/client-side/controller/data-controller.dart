@@ -12,4 +12,8 @@ class DataController{
   static updateDataById({int id, dynamic datum}){
     return  DataServices.updateDataById(dataId: id,datum: datum);
   }
+  static searchData({int userId, dynamic filter}){
+    return  DataServices.searchData(userId: userId,filter: filter);
+  }
+ 
 }

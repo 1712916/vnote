@@ -1,5 +1,8 @@
 
+import 'dart:convert';
+
 import 'package:lets_note/server-side/constants.dart';
+import 'package:lets_note/server-side/models/note-datum.dart';
 import 'package:lets_note/server-side/services/data.dart';
 import 'package:lets_note/server-side/services/login.dart';
 
@@ -8,7 +11,6 @@ void runServer(){
 }
 
 void serverManager() {
-
 }
 
 
@@ -23,15 +25,9 @@ class ServerManager{
         return DataServices.getDataById(id: data["dataId"]);
       case ConstantRequestName.updateDataById:
         return DataServices.updateDataById(id: data["dataId"],datum: data["datum"]);
+      case ConstantRequestName.searchData:
+        return DataServices.searchData(userId: data["userId"],filter: data["filter"]);
     }
   }
-}
-
-void main(){
-
-  print(  ServerManager.listenToRequest(requestName: ConstantRequestName.login,data: {
-    "userAccount":"boss",
-    "userPassword":"1"
-  }));
 }
 

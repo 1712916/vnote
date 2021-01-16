@@ -22,19 +22,40 @@ class _SpendingPageState extends State<SpendingPage> {
   SpendingModel dataResponse;
   TextEditingController moneyController;
   TextEditingController noteController;
+  TextEditingController selectedDateController;
+  TextEditingController selectedTimeController;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     moneyController = TextEditingController();
     noteController = TextEditingController();
+    selectedDateController=TextEditingController();
+    selectedTimeController=TextEditingController();
+
     if (this.widget.dataId != null) {
       var response = DataController.getDataById(id: this.widget.dataId);
       dataResponse = SpendingModel.fromJson(response);
       moneyController.text = dataResponse.money.toString();
+
       noteController.text = dataResponse.note;
+
+
     } else {
       dataResponse = SpendingModel(spendingType: SpendingTypeList.getDefault());
+
+    }
+    if(dataResponse.selectedDate!=null){
+    selectedDateController.text=  "${dataResponse.selectedDate.toLocal()}".split(' ')[0];
+    }else{
+      dataResponse.selectedDate=DateTime.now();
+      selectedDateController.text=   "${dataResponse.selectedDate.toLocal()}".split(' ')[0];
+    }
+    if(dataResponse.selectedTime!=null){
+      selectedTimeController.text=     "${dataResponse.selectedTime.hour}h - ${dataResponse.selectedTime.minute}p ";
+    }else{
+      dataResponse.selectedTime=TimeOfDay.now();
+      selectedTimeController.text=   "${dataResponse.selectedTime.hour}h - ${dataResponse.selectedTime.minute}p ";
     }
   }
 
@@ -73,58 +94,53 @@ class _SpendingPageState extends State<SpendingPage> {
                           builder: (context) {
                             return Container(
                               height: 400,
-                              child: Expanded(
-                                child: DefaultTabController(
-                                  length: 2,
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.drag_handle),
-                                      Divider(color: Colors.white,),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Container(
-                                              child: TabBar(
-                                                tabs: [
-                                                  Tab(
-                                                    child: Text("Chi tiêu"),
-                                                  ),
-                                                  Tab(
-                                                    child: Text("Thu nhập"),
-                                                  )
-                                                ],
-                                              ),
-                                              width: 200,
+                              child: DefaultTabController(
+                                length: 2,
+                                child: Column(
+                                  children: [
+                                    Icon(Icons.drag_handle),
+                                    Divider(color: Colors.white,),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Container(
+                                            child: TabBar(
+                                              tabs: [
+                                                Tab(
+                                                  child: Text("Chi tiêu"),
+                                                ),
+                                                Tab(
+                                                  child: Text("Thu nhập"),
+                                                )
+                                              ],
                                             ),
+                                            width: 200,
                                           ),
-                                          IconButton(
-                                              icon: Icon(Icons.settings),
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            SpendingTypeManagerPage())).then((value){
-                                                   setState(() {
-                                                     data0=SpendingTypeList.spending;
-                                                     data1=SpendingTypeList.income;
-                                                   });
-                                                });
-                                              })
+                                        ),
+                                        IconButton(
+                                            icon: Icon(Icons.settings),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          SpendingTypeManagerPage())) ;
+
+                                            })
+                                      ],
+                                    ),
+                                    Expanded(
+                                      child: TabBarView(
+                                        children: [
+                                          _buildListType(
+                                              data0),
+                                          _buildListType(
+                                              data1),
+
                                         ],
                                       ),
-                                      Expanded(
-                                        child: TabBarView(
-                                          children: [
-                                            _buildListType(
-                                                data0),
-                                            _buildListType(
-                                                data1),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    )
+                                  ],
                                 ),
                               ),
                             );
@@ -143,11 +159,16 @@ class _SpendingPageState extends State<SpendingPage> {
             ),
             Row(
               children: [
-                IconButton(icon: Icon(Icons.date_range), onPressed: null),
+                IconButton(icon: Icon(Icons.date_range), onPressed: (){
+                  _selectDate(context);
+                }),
                 Expanded(
                     child: TextField(
+readOnly: true,
+                      controller: selectedDateController,
                   decoration: InputDecoration(
                     labelText: "Ngày tháng",
+
                   ),
                 ))
               ],
@@ -155,10 +176,15 @@ class _SpendingPageState extends State<SpendingPage> {
             Row(
               children: [
                 IconButton(
-                    icon: Icon(Icons.watch_later_outlined), onPressed: null),
+                    icon: Icon(Icons.watch_later_outlined), onPressed: (){
+                  _selectTime(context);
+                }),
                 Expanded(
                     child: TextField(
+                      readOnly: true,
+                      controller: selectedTimeController,
                   decoration: InputDecoration(
+
                     labelText: "Thời gian",
                   ),
                 ))
@@ -185,7 +211,37 @@ class _SpendingPageState extends State<SpendingPage> {
       ),
     );
   }
+  _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: this.dataResponse.selectedDate, // Refer step 1
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2025),
+    );
+    if (picked != null && picked !=  this.dataResponse.selectedDate)
+      setState(() {
+        this.dataResponse.selectedDate = picked;
+        selectedDateController.text=  "${dataResponse.selectedDate.toLocal()}".split(' ')[0];
+      });
+  }
+  void _selectTime(BuildContext context) async{
 
+    TimeOfDay selectedTimeRTL = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (BuildContext context, Widget child) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: child,
+        );
+      },
+    );
+    if (selectedTimeRTL != null && selectedTimeRTL !=  this.dataResponse.selectedTime)
+      setState(() {
+        this.dataResponse.selectedTime = selectedTimeRTL;
+        selectedTimeController.text=   "${dataResponse.selectedTime.hour}h - ${dataResponse.selectedTime.minute}p ";
+      });
+  }
   _redo() {}
   _save() {
     SpendingModel newNote;
@@ -242,6 +298,8 @@ class _SpendingPageState extends State<SpendingPage> {
               );
             });
   }
+
+
 }
 
 String getSymbolSpendingType({String title}) {

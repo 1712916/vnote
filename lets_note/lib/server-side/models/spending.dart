@@ -1,4 +1,5 @@
 
+import 'package:flutter/material.dart';
 import 'package:lets_note/server-side/mockup-data/data.dart';
 import 'package:lets_note/server-side/models/note-datum.dart';
 
@@ -15,7 +16,10 @@ String spendingToJson(SpendingModel data) => json.encode(data.toJson());
   SpendingType spendingType;
   String note; //
   int money;
-  SpendingModel({this.note,this.id, this.spendingType, this.dateCreated,this.userId,this.dateUpdate,this.money});
+  DateTime selectedDate;
+  TimeOfDay selectedTime;
+
+  SpendingModel({this.note,this.id, this.spendingType, this.dateCreated,this.userId,this.dateUpdate,this.money,this.selectedDate,this.selectedTime});
   @override
   String getTitle() {
     print(this.spendingType);
@@ -47,6 +51,8 @@ String spendingToJson(SpendingModel data) => json.encode(data.toJson());
     money: json["money"],
     spendingType: SpendingType.fromJson(json["spendingType"]),
     note: json["content"],
+    selectedDate: json["selectedDate"]==null?null:DateTime.parse(json["selectedDate"]),
+    selectedTime: json["selectedTime"]==null?null: TimeOfDay.fromDateTime(DateTime.parse(json["selectedTime"])),
     dateCreated: DateTime.parse(json["dateCreated"]),
     dateUpdate: DateTime.parse(json["dateUpdate"]),
   );
@@ -59,5 +65,11 @@ String spendingToJson(SpendingModel data) => json.encode(data.toJson());
     "content": note,
     "dateCreated": dateCreated.toIso8601String(),
     "dateUpdate": dateUpdate.toIso8601String(),
+    "selectedDate":selectedDate==null?null:selectedDate.toIso8601String(),
+    "selectedTime":selectedTime==null?null:((){
+
+      final now = new DateTime.now();
+      return new DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute).toIso8601String();
+    })(),
   };
 }

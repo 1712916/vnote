@@ -1,5 +1,5 @@
 import 'package:lets_note/server-side/constants.dart';
-import 'package:lets_note/server-side/main.dart';
+import 'package:lets_note/server-side/server-main.dart';
 
 class DataServices{
   static Map getDataById({int dataId }){
@@ -18,6 +18,12 @@ class DataServices{
     var response = ServerManager.listenToRequest(
         requestName: ConstantRequestName.updateDataById,
         data: {'dataId': dataId,'datum':datum});
+    return response;
+  }
+  static searchData({int userId,dynamic filter}){
+    var response = ServerManager.listenToRequest(
+        requestName: ConstantRequestName.searchData,
+        data: {'userId': userId,'filter':filter});
     return response;
   }
 }

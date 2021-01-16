@@ -5,6 +5,7 @@ import 'package:lets_note/client-side/controller/login.dart';
 import 'package:lets_note/client-side/provider/login-provider.dart';
 import 'package:lets_note/client-side/widgets/custom-widgets/space.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -71,6 +72,10 @@ class _LoginPageState extends State<LoginPage> {
                   Provider.of<LoginProvider>(context,listen: false).changeStatus();
                   Provider.of<LoginProvider>(context,listen: false).updateData(userId: response['payload']['userId'],userAccount:response['payload']['userAccount'],userName: response['payload']['userName']);
                   print("data ${     Provider.of<LoginProvider>(context,listen: false).userId}");
+                  Future<SharedPreferences> prefs = SharedPreferences.getInstance();
+                  prefs.then((value) {
+                    value.setInt("userId", response['payload']['userId']);
+                  });
                 }else{
                   setState(() {
                     message="Đăng nhập thất bại!";
